@@ -86,10 +86,15 @@ int main(void)
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
   /* USER CODE BEGIN 2 */
-  int time_on = 2;
-  int time_off = 4;
+  int time_red = 5;
+  int time_green = 3;
+  int time_yellow = 2;
+
+  int red_status = 1;
+  int green_status = 0;
+  int yellow_status = 0;
+
   int counter = 0;
-  int led_status = 1;
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -99,11 +104,31 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-	  HAL_GPIO_WritePin(DEBUG_LED_GPIO_Port, DEBUG_LED_Pin , led_status);
+	  HAL_GPIO_WritePin(RED_LED_GPIO_Port, RED_LED_Pin , red_status);
+	  HAL_GPIO_WritePin(GREEN_LED_GPIO_Port, GREEN_LED_Pin , green_status);
+	  HAL_GPIO_WritePin(YELLOW_LED_GPIO_Port, YELLOW_LED_Pin , yellow_status);
 	  counter = counter + 1;
-	  if ((led_status && counter >= time_on) || (!led_status && counter >= time_off)) {
-		  counter = 0;
-		  led_status = 1 - led_status;
+	  if (red_status) {
+		  if (counter >= time_red) {
+			  counter = 0;
+			  red_status = 0;
+			  green_status = 1;
+			  yellow_status = 0;
+		  }
+	  } else if (green_status) {
+		  if (counter >= time_green) {
+			  counter = 0;
+			  red_status = 0;
+			  green_status = 0;
+			  yellow_status = 1;
+		  }
+	  } else if (yellow_status) {
+		  if (counter >= time_yellow) {
+			  counter = 0;
+			  red_status = 1;
+			  green_status = 0;
+			  yellow_status = 0;
+		  }
 	  }
 	  HAL_Delay(1000);
   }
@@ -169,14 +194,14 @@ static void MX_GPIO_Init(void)
   __HAL_RCC_GPIOA_CLK_ENABLE();
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(DEBUG_LED_GPIO_Port, DEBUG_LED_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(GPIOE, GREEN_LED_Pin|YELLOW_LED_Pin|RED_LED_Pin, GPIO_PIN_RESET);
 
-  /*Configure GPIO pin : DEBUG_LED_Pin */
-  GPIO_InitStruct.Pin = DEBUG_LED_Pin;
+  /*Configure GPIO pins : GREEN_LED_Pin YELLOW_LED_Pin RED_LED_Pin */
+  GPIO_InitStruct.Pin = GREEN_LED_Pin|YELLOW_LED_Pin|RED_LED_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-  HAL_GPIO_Init(DEBUG_LED_GPIO_Port, &GPIO_InitStruct);
+  HAL_GPIO_Init(GPIOE, &GPIO_InitStruct);
 
 }
 
