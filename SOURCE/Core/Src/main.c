@@ -61,14 +61,12 @@ void SystemClock_Config(void);
 static void MX_GPIO_Init(void);
 static void MX_TIM2_Init(void);
 static void MX_SPI1_Init(void);
-
+/* USER CODE BEGIN PFP */
 void system_init();
 void test_ledDebug();
 void test_ledY0();
 void test_ledY1();
 void test_7seg();
-/* USER CODE BEGIN PFP */
-
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
