@@ -117,6 +117,12 @@ int main(void)
   int ledDebug_status = 0;
   int ledY0_status = 0;
   int ledY1_status = 0;
+
+  int time_debug = 2;
+  int time_on_y0 = 2;
+  int time_off_y0 = 4;
+  int time_on_y1 = 5;
+  int time_off_y1 = 1;
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -133,16 +139,16 @@ int main(void)
 	  counter_y0 = counter_y0 + 1;
 	  counter_y1 = counter_y1 + 1;
 
-	  if (counter_debug >= 2) ledDebug_status = 1 - ledDebug_status;
+	  if (counter_debug >= time_debug) ledDebug_status = 1 - ledDebug_status;
 	  if (ledY0_status) {
-		  if (counter_y0 >= 2) ledY0_status = 0;
+		  if (counter_y0 >= time_on_y0) ledY0_status = 0;
 	  } else {
-		  if (counter_y0 >= 4) ledY0_status = 1;
+		  if (counter_y0 >= time_off_y0) ledY0_status = 1;
 	  }
 	  if (ledY1_status) {
-		  if (counter_y1 >= 5) ledY1_status = 0;
+		  if (counter_y1 >= time_on_y1) ledY1_status = 0;
 	  } else {
-		  if (counter_y1 >= 1) ledY1_status = 1;
+		  if (counter_y1 >= time_off_y1) ledY1_status = 1;
 	  }
 
 	  HAL_GPIO_WritePin(DEBUG_LED_GPIO_Port, DEBUG_LED_Pin, ledDebug_status);
