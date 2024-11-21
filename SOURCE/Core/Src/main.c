@@ -110,9 +110,9 @@ int main(void)
   int green_status = 0;
   int yellow_status = 0;
 
-  int time_red = 5;
-  int time_green = 3;
-  int time_yellow = 2;
+  int time_red = 50;
+  int time_green = 30;
+  int time_yellow = 20;
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -132,18 +132,21 @@ int main(void)
 
 	  if (red_status) {
 		  if (counter >= time_red) {
+			  counter = 0;
 			  red_status = 0;
 			  green_status = 1;
 			  yellow_status = 0;
 		  }
 	  } else if (green_status) {
 		  if (counter >= time_green) {
+			  counter = 0;
 			  red_status = 0;
 			  green_status = 0;
 			  yellow_status = 1;
 		  }
 	  } else if (yellow_status) {
 		  if (counter >= time_yellow) {
+			  counter = 0;
 			  red_status = 1;
 			  green_status = 0;
 			  yellow_status = 0;
