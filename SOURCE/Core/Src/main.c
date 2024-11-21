@@ -116,11 +116,11 @@ int main(void)
   int ledY0_status = 0;
   int ledY1_status = 0;
 
-  int time_debug = 2;
-  int time_on_y0 = 2;
-  int time_off_y0 = 4;
-  int time_on_y1 = 5;
-  int time_off_y1 = 1;
+  int time_debug = 20;
+  int time_on_y0 = 20;
+  int time_off_y0 = 40;
+  int time_on_y1 = 50;
+  int time_off_y1 = 10;
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -133,21 +133,17 @@ int main(void)
 	  while (!flag_timer2);
 	  flag_timer2 = 0;
 
-	  counter_debug = counter_debug + 1;
-	  counter_y0 = counter_y0 + 1;
-	  counter_y1 = counter_y1 + 1;
+	  counter_debug = (counter_debug + 1) % time_debug;
+	  counter_y0 = (counter_y0 + 1) % (time_on_y0 + time_off_y0);
+	  counter_y1 = (counter_y1 + 1) % (time_on_y1 + time_off_y1);
 
-	  if (counter_debug >= time_debug) ledDebug_status = 1 - ledDebug_status;
-	  if (ledY0_status) {
-		  if (counter_y0 >= time_on_y0) ledY0_status = 0;
-	  } else {
-		  if (counter_y0 >= time_off_y0) ledY0_status = 1;
-	  }
-	  if (ledY1_status) {
-		  if (counter_y1 >= time_on_y1) ledY1_status = 0;
-	  } else {
-		  if (counter_y1 >= time_off_y1) ledY1_status = 1;
-	  }
+	  if (counter_debug == 0) ledDebug_status = 1 - ledDebug_status;
+
+	  if (counter_y0 < time_on_y0) ledY0_status = 1;
+	  else ledY0_status = 0;
+
+	  if (counter_y1 < time_on_y1) ledY1_status = 1;
+	  else ledY1_status = 0;
 
 	  HAL_GPIO_WritePin(DEBUG_LED_GPIO_Port, DEBUG_LED_Pin, ledDebug_status);
 	  HAL_GPIO_WritePin(OUTPUT_Y0_GPIO_Port, OUTPUT_Y0_Pin, ledY0_status);
@@ -157,10 +153,6 @@ int main(void)
 //	  test_ledY0();
 //	  test_ledY1();
 //	  test_7seg();
-
-
-
-
   }
   /* USER CODE END 3 */
 }
@@ -357,6 +349,7 @@ uint8_t count_LED_Y0 = 0;
 uint8_t count_LED_Y1 = 0;
 
 void test_ledDebug(){
+	// toggle each 2 second
 	count_LED_debug = (count_LED_debug + 1) % 20;
 	if (count_LED_debug == 0) {
 		HAL_GPIO_TogglePin(DEBUG_LED_GPIO_Port, DEBUG_LED_Pin);
