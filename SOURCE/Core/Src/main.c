@@ -100,11 +100,9 @@ int main(void)
 
     /* USER CODE BEGIN 3 */
 	  HAL_GPIO_WritePin(DEBUG_LED_GPIO_Port, DEBUG_LED_Pin , led_status);
-	  counter = counter + 1;
-	  if ((led_status && counter >= time_on) || (!led_status && counter >= time_off)) {
-		  counter = 0;
-		  led_status = 1 - led_status;
-	  }
+	  counter = (counter + 1) % (time_on + time_off);
+	  if (counter < time_on) led_status = 1;
+	  else led_status = 0;
 	  HAL_Delay(1000);
   }
   /* USER CODE END 3 */
