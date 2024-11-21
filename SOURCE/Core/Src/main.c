@@ -106,7 +106,9 @@ int main(void)
   MX_SPI1_Init();
   /* USER CODE BEGIN 2 */
   system_init();
-  led7_SetColon(1);
+  led7_SetColon(0);
+
+  uint8_t led7seg[4] = {0, 1, 2, 3};
 
   // frequency = 1 Hz
   setTimer2(1000);
@@ -117,6 +119,8 @@ int main(void)
 //  // frequency = 100 Hz
 //  setTimer2(10);
 
+
+
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -126,9 +130,16 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
+	  led7_SetDigit(led7seg[0], 0, 0);
+	  led7_SetDigit(led7seg[1], 1, 0);
+	  led7_SetDigit(led7seg[2], 2, 0);
+	  led7_SetDigit(led7seg[3], 3, 0);
 
 	  while (!flag_timer2);
 	  flag_timer2 = 0;
+	  led7seg[3] = (led7seg[3] + 1) % 10;
+
+
 
 //	  test_ledDebug();
 //	  test_ledY0();
