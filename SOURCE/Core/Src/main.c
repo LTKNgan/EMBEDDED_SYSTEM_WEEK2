@@ -137,7 +137,7 @@ int main(void)
 
 	  while (!flag_timer2);
 	  flag_timer2 = 0;
-	  led7seg[3] = (led7seg[3] + 1) % 10;
+//	  led7seg[3] = (led7seg[3] + 1) % 10;
 
 
 
