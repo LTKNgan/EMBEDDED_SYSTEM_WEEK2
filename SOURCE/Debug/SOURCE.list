@@ -1381,7 +1381,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim){
  8000afa:	4b0d      	ldr	r3, [pc, #52]	; (8000b30 <HAL_TIM_PeriodElapsedCallback+0x48>)
  8000afc:	881b      	ldrh	r3, [r3, #0]
  8000afe:	2b00      	cmp	r3, #0
- 8000b00:	d010      	beq.n	8000b24 <HAL_TIM_PeriodElapsedCallback+0x3c>
+ 8000b00:	d012      	beq.n	8000b28 <HAL_TIM_PeriodElapsedCallback+0x40>
 			timer2_counter--;
  8000b02:	4b0b      	ldr	r3, [pc, #44]	; (8000b30 <HAL_TIM_PeriodElapsedCallback+0x48>)
  8000b04:	881b      	ldrh	r3, [r3, #0]
@@ -1393,7 +1393,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim){
  8000b0e:	4b08      	ldr	r3, [pc, #32]	; (8000b30 <HAL_TIM_PeriodElapsedCallback+0x48>)
  8000b10:	881b      	ldrh	r3, [r3, #0]
  8000b12:	2b00      	cmp	r3, #0
- 8000b14:	d106      	bne.n	8000b24 <HAL_TIM_PeriodElapsedCallback+0x3c>
+ 8000b14:	d108      	bne.n	8000b28 <HAL_TIM_PeriodElapsedCallback+0x40>
 				flag_timer2 = 1;
  8000b16:	4b07      	ldr	r3, [pc, #28]	; (8000b34 <HAL_TIM_PeriodElapsedCallback+0x4c>)
  8000b18:	2201      	movs	r2, #1
@@ -1403,10 +1403,11 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim){
  8000b1e:	881a      	ldrh	r2, [r3, #0]
  8000b20:	4b03      	ldr	r3, [pc, #12]	; (8000b30 <HAL_TIM_PeriodElapsedCallback+0x48>)
  8000b22:	801a      	strh	r2, [r3, #0]
+				led7_Scan();
+ 8000b24:	f7ff fcd8 	bl	80004d8 <led7_Scan>
 			}
 		}
-		led7_Scan();
- 8000b24:	f7ff fcd8 	bl	80004d8 <led7_Scan>
+
 	}
 }
  8000b28:	bf00      	nop
