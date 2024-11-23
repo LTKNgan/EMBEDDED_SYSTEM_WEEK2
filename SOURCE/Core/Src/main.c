@@ -109,17 +109,14 @@ int main(void)
   led7_SetColon(0);
 
   uint8_t led7seg[4] = {0, 1, 2, 3};
+  int tick = 0;
+  int sec = 0;
+  int min = (led7seg[2] * 10 + led7seg[3]);
+  int hour = (led7seg[0] * 10 + led7seg[1]);
+  int colon_status = 0;
 
-  // frequency = 1 Hz
-  setTimer2(1000);
-
-//  // frequency = 25 Hz
-//  setTimer2(40);
-
-//  // frequency = 100 Hz
-//  setTimer2(10);
-
-
+  // frequency =  Hz
+  setTimer2(250);
 
   /* USER CODE END 2 */
 
@@ -130,16 +127,32 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
+
+
+	  while (!flag_timer2);
+	  flag_timer2 = 0;
+
+	  colon_status = 1 - colon_status;
+	  tick = (tick + 1) % 4;
+	  if (tick == 0) {
+		  sec = (sec + 1) % 60;
+		  if (sec == 0) {
+			  min = (min + 1) % 60;
+			  if (min == 0) {
+				  hour = (hour + 1) % 24;
+			  }
+		  }
+	  }
+	  led7seg[0] = hour / 10;
+	  led7seg[1] = hour % 10;
+	  led7seg[2] = min / 10;
+	  led7seg[3] = min % 10;
+
+	  led7_SetColon(colon_status);
 	  led7_SetDigit(led7seg[0], 0, 0);
 	  led7_SetDigit(led7seg[1], 1, 0);
 	  led7_SetDigit(led7seg[2], 2, 0);
 	  led7_SetDigit(led7seg[3], 3, 0);
-
-	  while (!flag_timer2);
-	  flag_timer2 = 0;
-	  led7seg[3] = (led7seg[3] + 1) % 10;
-
-
 
 //	  test_ledDebug();
 //	  test_ledY0();
