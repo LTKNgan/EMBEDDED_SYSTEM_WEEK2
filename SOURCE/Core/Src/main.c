@@ -108,15 +108,15 @@ int main(void)
   system_init();
   led7_SetColon(0);
 
-  uint8_t led7seg[4] = {0, 1, 2, 3};
+  uint8_t led7seg[4] = {2, 3, 5, 9};
   int tick = 0;
-  int sec = 0;
+  int sec = 40;
   int min = (led7seg[2] * 10 + led7seg[3]);
   int hour = (led7seg[0] * 10 + led7seg[1]);
   int colon_status = 0;
 
   // frequency =  Hz
-  setTimer2(250);
+  setTimer2(1);
 
   /* USER CODE END 2 */
 
@@ -132,9 +132,11 @@ int main(void)
 	  while (!flag_timer2);
 	  flag_timer2 = 0;
 
-	  colon_status = 1 - colon_status;
-	  tick = (tick + 1) % 4;
+
+	  tick = (tick + 1) % 1000;
+	  if (tick % 250 == 0) colon_status = 1 - colon_status;
 	  if (tick == 0) {
+		  colon_status = 1 - colon_status;
 		  sec = (sec + 1) % 60;
 		  if (sec == 0) {
 			  min = (min + 1) % 60;
