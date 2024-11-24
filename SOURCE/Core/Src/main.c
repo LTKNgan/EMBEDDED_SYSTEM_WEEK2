@@ -110,10 +110,9 @@ int main(void)
 
   uint8_t led7seg[4] = {0, 1, 2, 3};
   uint8_t led7seg_buffer[4] = {0, 1, 2, 3};
+  int counter = 0;
 
-
-  // frequency =  Hz
-  setTimer2(1000);
+  setTimer2(2);
 
   /* USER CODE END 2 */
 
@@ -128,6 +127,17 @@ int main(void)
 
 	  while (!flag_timer2);
 	  flag_timer2 = 0;
+	  counter = (counter + 1) % 500;
+	  if (counter == 0) {
+		  led7seg[0] = led7seg_buffer[3];
+		  led7seg[1] = led7seg_buffer[0];
+		  led7seg[2] = led7seg_buffer[1];
+		  led7seg[3] = led7seg_buffer[2];
+		  for (int i = 0; i < 4; ++i) {
+			  led7seg_buffer[i] = led7seg[i];
+		  }
+	  }
+
 
 
 	  led7_SetDigit(led7seg[0], 0, 0);
@@ -135,13 +145,7 @@ int main(void)
 	  led7_SetDigit(led7seg[2], 2, 0);
 	  led7_SetDigit(led7seg[3], 3, 0);
 
-	  led7seg[0] = led7seg_buffer[3];
-	  led7seg[1] = led7seg_buffer[0];
-	  led7seg[2] = led7seg_buffer[1];
-	  led7seg[3] = led7seg_buffer[2];
-	  for (int i = 0; i < 4; ++i) {
-		  led7seg_buffer[i] = led7seg[i];
-	  }
+
 
 
 
