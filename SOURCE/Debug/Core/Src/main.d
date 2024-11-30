@@ -19,6 +19,9 @@ Core/Src/main.o: ../Core/Src/main.c ../Core/Inc/main.h \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_dma.h \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_dma_ex.h \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_cortex.h \
+ ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_adc.h \
+ ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_ll_adc.h \
+ ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_adc_ex.h \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_flash.h \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_flash_ex.h \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_flash_ramfunc.h \
@@ -33,11 +36,13 @@ Core/Src/main.o: ../Core/Src/main.c ../Core/Inc/main.h \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_tim_ex.h \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_uart.h \
  ../Core/Inc/i2c.h ../Core/Inc/main.h ../Core/Inc/spi.h ../Core/Inc/tim.h \
- ../Core/Inc/usart.h ../Core/Inc/gpio.h ../Core/Inc/software_timer.h \
- ../Core/Inc/tim.h ../Core/Inc/led_7seg.h ../Core/Inc/spi.h \
- ../Core/Inc/button.h ../Core/Inc/lcd.h ../Core/Inc/gpio.h \
- ../Core/Inc/picture.h ../Core/Inc/ds3231.h ../Core/Inc/i2c.h \
- ../Core/Inc/utils.h ../Core/Inc/uart.h ../Core/Inc/usart.h
+ ../Core/Inc/usart.h ../Core/Inc/gpio.h ../Core/Inc/adc.h \
+ ../Core/Inc/utils.h ../Core/Inc/software_timer.h ../Core/Inc/tim.h \
+ ../Core/Inc/led_7seg.h ../Core/Inc/spi.h ../Core/Inc/button.h \
+ ../Core/Inc/lcd.h ../Core/Inc/gpio.h ../Core/Inc/picture.h \
+ ../Core/Inc/ds3231.h ../Core/Inc/i2c.h ../Core/Inc/utils.h \
+ ../Core/Inc/uart.h ../Core/Inc/usart.h ../Core/Inc/sensor.h \
+ ../Core/Inc/adc.h ../Core/Inc/buzzer.h
 
 ../Core/Inc/main.h:
 
@@ -81,6 +86,12 @@ Core/Src/main.o: ../Core/Src/main.c ../Core/Inc/main.h \
 
 ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_cortex.h:
 
+../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_adc.h:
+
+../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_ll_adc.h:
+
+../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_adc_ex.h:
+
 ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_flash.h:
 
 ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_flash_ex.h:
@@ -119,6 +130,10 @@ Core/Src/main.o: ../Core/Src/main.c ../Core/Inc/main.h \
 
 ../Core/Inc/gpio.h:
 
+../Core/Inc/adc.h:
+
+../Core/Inc/utils.h:
+
 ../Core/Inc/software_timer.h:
 
 ../Core/Inc/tim.h:
@@ -144,3 +159,9 @@ Core/Src/main.o: ../Core/Src/main.c ../Core/Inc/main.h \
 ../Core/Inc/uart.h:
 
 ../Core/Inc/usart.h:
+
+../Core/Inc/sensor.h:
+
+../Core/Inc/adc.h:
+
+../Core/Inc/buzzer.h:

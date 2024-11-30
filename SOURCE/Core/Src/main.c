@@ -28,6 +28,8 @@
 #include "tim.h"
 #include "usart.h"
 #include "gpio.h"
+#include "adc.h"
+#include "utils.h"
 
 
 #include "software_timer.h"
@@ -37,6 +39,8 @@
 #include "picture.h"
 #include "ds3231.h"
 #include "uart.h"
+#include "sensor.h"
+#include "buzzer.h"
 
 /* USER CODE END Includes */
 
@@ -55,11 +59,15 @@
 /* USER CODE END PM */
 
 /* Private variables ---------------------------------------------------------*/
+ADC_HandleTypeDef hadc1;
+DMA_HandleTypeDef hdma_adc1;
+
 I2C_HandleTypeDef hi2c1;
 
 SPI_HandleTypeDef hspi1;
 
 TIM_HandleTypeDef htim2;
+TIM_HandleTypeDef htim13;
 
 UART_HandleTypeDef huart1;
 
@@ -76,13 +84,18 @@ static void MX_TIM2_Init(void);
 static void MX_SPI1_Init(void);
 static void MX_FSMC_Init(void);
 static void MX_USART1_UART_Init(void);
+static void MX_DMA_Init(void);
+static void MX_ADC1_Init(void);
 static void MX_I2C1_Init(void);
+static void MX_TIM13_Init(void);
 /* USER CODE BEGIN PFP */
 void system_init();
 void test_ledDebug();
 void test_ledY0();
 void test_ledY1();
 void test_7seg();
+void test_adc();
+void test_buzzer();
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
@@ -122,7 +135,10 @@ int main(void)
   MX_SPI1_Init();
   MX_FSMC_Init();
   MX_USART1_UART_Init();
+  MX_DMA_Init();
+  MX_ADC1_Init();
   MX_I2C1_Init();
+  MX_TIM13_Init();
   /* USER CODE BEGIN 2 */
   system_init();
 
@@ -142,7 +158,8 @@ int main(void)
 	  flag_timer2 = 0;
 	  button_Scan();
 	  test_ledDebug();
-	  ds3231_ReadTime();
+	  test_adc();
+	  test_buzzer();
 //	  test_uart();
 
 
@@ -196,6 +213,88 @@ void SystemClock_Config(void)
   {
     Error_Handler();
   }
+}
+
+/**
+  * @brief ADC1 Initialization Function
+  * @param None
+  * @retval None
+  */
+static void MX_ADC1_Init(void)
+{
+
+  /* USER CODE BEGIN ADC1_Init 0 */
+
+  /* USER CODE END ADC1_Init 0 */
+
+  ADC_ChannelConfTypeDef sConfig = {0};
+
+  /* USER CODE BEGIN ADC1_Init 1 */
+
+  /* USER CODE END ADC1_Init 1 */
+  /** Configure the global features of the ADC (Clock, Resolution, Data Alignment and number of conversion)
+  */
+  hadc1.Instance = ADC1;
+  hadc1.Init.ClockPrescaler = ADC_CLOCK_SYNC_PCLK_DIV2;
+  hadc1.Init.Resolution = ADC_RESOLUTION_12B;
+  hadc1.Init.ScanConvMode = ENABLE;
+  hadc1.Init.ContinuousConvMode = DISABLE;
+  hadc1.Init.DiscontinuousConvMode = DISABLE;
+  hadc1.Init.ExternalTrigConvEdge = ADC_EXTERNALTRIGCONVEDGE_NONE;
+  hadc1.Init.ExternalTrigConv = ADC_SOFTWARE_START;
+  hadc1.Init.DataAlign = ADC_DATAALIGN_RIGHT;
+  hadc1.Init.NbrOfConversion = 5;
+  hadc1.Init.DMAContinuousRequests = DISABLE;
+  hadc1.Init.EOCSelection = ADC_EOC_SINGLE_CONV;
+  if (HAL_ADC_Init(&hadc1) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /** Configure for the selected ADC regular channel its corresponding rank in the sequencer and its sample time.
+  */
+  sConfig.Channel = ADC_CHANNEL_8;
+  sConfig.Rank = 1;
+  sConfig.SamplingTime = ADC_SAMPLETIME_3CYCLES;
+  if (HAL_ADC_ConfigChannel(&hadc1, &sConfig) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /** Configure for the selected ADC regular channel its corresponding rank in the sequencer and its sample time.
+  */
+  sConfig.Channel = ADC_CHANNEL_9;
+  sConfig.Rank = 2;
+  if (HAL_ADC_ConfigChannel(&hadc1, &sConfig) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /** Configure for the selected ADC regular channel its corresponding rank in the sequencer and its sample time.
+  */
+  sConfig.Channel = ADC_CHANNEL_10;
+  sConfig.Rank = 3;
+  if (HAL_ADC_ConfigChannel(&hadc1, &sConfig) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /** Configure for the selected ADC regular channel its corresponding rank in the sequencer and its sample time.
+  */
+  sConfig.Channel = ADC_CHANNEL_11;
+  sConfig.Rank = 4;
+  if (HAL_ADC_ConfigChannel(&hadc1, &sConfig) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /** Configure for the selected ADC regular channel its corresponding rank in the sequencer and its sample time.
+  */
+  sConfig.Channel = ADC_CHANNEL_12;
+  sConfig.Rank = 5;
+  if (HAL_ADC_ConfigChannel(&hadc1, &sConfig) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /* USER CODE BEGIN ADC1_Init 2 */
+
+  /* USER CODE END ADC1_Init 2 */
+
 }
 
 /**
@@ -316,6 +415,52 @@ static void MX_TIM2_Init(void)
 }
 
 /**
+  * @brief TIM13 Initialization Function
+  * @param None
+  * @retval None
+  */
+static void MX_TIM13_Init(void)
+{
+
+  /* USER CODE BEGIN TIM13_Init 0 */
+
+  /* USER CODE END TIM13_Init 0 */
+
+  TIM_OC_InitTypeDef sConfigOC = {0};
+
+  /* USER CODE BEGIN TIM13_Init 1 */
+
+  /* USER CODE END TIM13_Init 1 */
+  htim13.Instance = TIM13;
+  htim13.Init.Prescaler = 840-1;
+  htim13.Init.CounterMode = TIM_COUNTERMODE_UP;
+  htim13.Init.Period = 100-1;
+  htim13.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
+  htim13.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
+  if (HAL_TIM_Base_Init(&htim13) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  if (HAL_TIM_PWM_Init(&htim13) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  sConfigOC.OCMode = TIM_OCMODE_PWM1;
+  sConfigOC.Pulse = 0;
+  sConfigOC.OCPolarity = TIM_OCPOLARITY_HIGH;
+  sConfigOC.OCFastMode = TIM_OCFAST_DISABLE;
+  if (HAL_TIM_PWM_ConfigChannel(&htim13, &sConfigOC, TIM_CHANNEL_1) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /* USER CODE BEGIN TIM13_Init 2 */
+
+  /* USER CODE END TIM13_Init 2 */
+  HAL_TIM_MspPostInit(&htim13);
+
+}
+
+/**
   * @brief USART1 Initialization Function
   * @param None
   * @retval None
@@ -349,6 +494,22 @@ static void MX_USART1_UART_Init(void)
 }
 
 /**
+  * Enable DMA controller clock
+  */
+static void MX_DMA_Init(void)
+{
+
+  /* DMA controller clock enable */
+  __HAL_RCC_DMA2_CLK_ENABLE();
+
+  /* DMA interrupt init */
+  /* DMA2_Stream0_IRQn interrupt configuration */
+  HAL_NVIC_SetPriority(DMA2_Stream0_IRQn, 0, 0);
+  HAL_NVIC_EnableIRQ(DMA2_Stream0_IRQn);
+
+}
+
+/**
   * @brief GPIO Initialization Function
   * @param None
   * @retval None
@@ -360,11 +521,12 @@ static void MX_GPIO_Init(void)
   /* GPIO Ports Clock Enable */
   __HAL_RCC_GPIOE_CLK_ENABLE();
   __HAL_RCC_GPIOC_CLK_ENABLE();
+  __HAL_RCC_GPIOF_CLK_ENABLE();
   __HAL_RCC_GPIOH_CLK_ENABLE();
-  __HAL_RCC_GPIOD_CLK_ENABLE();
-  __HAL_RCC_GPIOG_CLK_ENABLE();
   __HAL_RCC_GPIOA_CLK_ENABLE();
   __HAL_RCC_GPIOB_CLK_ENABLE();
+  __HAL_RCC_GPIOD_CLK_ENABLE();
+  __HAL_RCC_GPIOG_CLK_ENABLE();
 
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(GPIOE, DEBUG_LED_Pin|OUTPUT_Y0_Pin|OUTPUT_Y1_Pin, GPIO_PIN_RESET);
@@ -394,6 +556,18 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(FSMC_RES_GPIO_Port, &GPIO_InitStruct);
+
+  /*Configure GPIO pins : INPUT_X0_Pin INPUT_X1_Pin */
+  GPIO_InitStruct.Pin = INPUT_X0_Pin|INPUT_X1_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+
+  /*Configure GPIO pins : INPUT_X2_Pin INPUT_X3_Pin */
+  GPIO_InitStruct.Pin = INPUT_X2_Pin|INPUT_X3_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
 
   /*Configure GPIO pin : LD_LATCH_Pin */
   GPIO_InitStruct.Pin = LD_LATCH_Pin;
@@ -491,6 +665,8 @@ void system_init(){
 	lcd_init();
 	ds3231_init();
 	uart_init_rs232();
+	sensor_init();
+	buzzer_init();
 	setTimer2(50);
 }
 
@@ -540,6 +716,61 @@ void test_uart(){
 		uart_Rs232SendNum(ds3231_sec);
 		uart_Rs232SendString("\n");
 	}
+}
+uint8_t isButtonUp ()
+{
+	if ( button_count [3] == 1)
+		return 1;
+	else
+		return 0;
+}
+
+uint8_t isButtonDown (){
+	if ( button_count [7] == 1)
+		return 1;
+	else
+		return 0;
+}
+
+uint8_t isButtonRight (){
+	if ( button_count [11] == 1)
+		return 1;
+	else
+		return 0;
+}
+
+uint8_t count_adc = 0;
+
+void test_adc(){
+	count_adc = (count_adc + 1)%20;
+	if(count_adc == 0){
+		sensor_Read();
+		lcd_ShowStr(10, 100, "Voltage:", RED, BLACK, 16, 0);
+		lcd_ShowFloatNum(130, 100,sensor_GetVoltage(), 4, RED, BLACK, 16);
+		lcd_ShowStr(10, 120, "Current:", RED, BLACK, 16, 0);
+		lcd_ShowFloatNum(130, 120,sensor_GetCurrent(), 4, RED, BLACK, 16);
+		lcd_ShowStr(10, 140, "Light:", RED, BLACK, 16, 0);
+		lcd_ShowIntNum(130, 140, sensor_GetLight(), 4, RED, BLACK, 16);
+		lcd_ShowStr(10, 160, "Potentiometer:", RED, BLACK, 16, 0);
+		lcd_ShowIntNum(130, 160, sensor_GetPotentiometer(), 4, RED, BLACK, 16);
+		lcd_ShowStr(10, 180, "Temperature:", RED, BLACK, 16, 0);
+		lcd_ShowFloatNum(130, 180,sensor_GetTemperature(), 4, RED, BLACK, 16);
+	}
+}
+
+void test_buzzer(){
+	if(isButtonUp()){
+		buzzer_SetVolume(50);
+	}
+
+	if(isButtonDown()){
+		buzzer_SetVolume(0);
+	}
+
+	if(isButtonRight()){
+		buzzer_SetVolume(25);
+	}
+
 }
 
 /* USER CODE END 4 */

@@ -6,51 +6,60 @@
 # Add inputs and outputs from these tool invocations to the build variables 
 C_SRCS += \
 ../Core/Src/button.c \
+../Core/Src/buzzer.c \
 ../Core/Src/ds3231.c \
 ../Core/Src/lcd.c \
 ../Core/Src/led_7seg.c \
 ../Core/Src/main.c \
 ../Core/Src/picture.c \
+../Core/Src/sensor.c \
 ../Core/Src/software_timer.c \
 ../Core/Src/stm32f4xx_hal_msp.c \
 ../Core/Src/stm32f4xx_it.c \
 ../Core/Src/syscalls.c \
 ../Core/Src/sysmem.c \
 ../Core/Src/system_stm32f4xx.c \
+../Core/Src/tim.c \
 ../Core/Src/uart.c \
 ../Core/Src/usart.c \
 ../Core/Src/utils.c 
 
 OBJS += \
 ./Core/Src/button.o \
+./Core/Src/buzzer.o \
 ./Core/Src/ds3231.o \
 ./Core/Src/lcd.o \
 ./Core/Src/led_7seg.o \
 ./Core/Src/main.o \
 ./Core/Src/picture.o \
+./Core/Src/sensor.o \
 ./Core/Src/software_timer.o \
 ./Core/Src/stm32f4xx_hal_msp.o \
 ./Core/Src/stm32f4xx_it.o \
 ./Core/Src/syscalls.o \
 ./Core/Src/sysmem.o \
 ./Core/Src/system_stm32f4xx.o \
+./Core/Src/tim.o \
 ./Core/Src/uart.o \
 ./Core/Src/usart.o \
 ./Core/Src/utils.o 
 
 C_DEPS += \
 ./Core/Src/button.d \
+./Core/Src/buzzer.d \
 ./Core/Src/ds3231.d \
 ./Core/Src/lcd.d \
 ./Core/Src/led_7seg.d \
 ./Core/Src/main.d \
 ./Core/Src/picture.d \
+./Core/Src/sensor.d \
 ./Core/Src/software_timer.d \
 ./Core/Src/stm32f4xx_hal_msp.d \
 ./Core/Src/stm32f4xx_it.d \
 ./Core/Src/syscalls.d \
 ./Core/Src/sysmem.d \
 ./Core/Src/system_stm32f4xx.d \
+./Core/Src/tim.d \
 ./Core/Src/uart.d \
 ./Core/Src/usart.d \
 ./Core/Src/utils.d 

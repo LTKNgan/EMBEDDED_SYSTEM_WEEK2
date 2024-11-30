@@ -17,6 +17,10 @@ extern "C" {
 
 
 extern TIM_HandleTypeDef htim2;
+extern TIM_HandleTypeDef htim13;
+
+void HAL_TIM_MspPostInit(TIM_HandleTypeDef *htim);
+
 
 #ifdef __cplusplus
 }
