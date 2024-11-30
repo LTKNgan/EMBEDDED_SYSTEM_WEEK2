@@ -23,18 +23,20 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 
-#include "led_7seg.h"
-#include "software_timer.h"
+#include "i2c.h"
 #include "spi.h"
 #include "tim.h"
+#include "usart.h"
+#include "gpio.h"
+
+
+#include "software_timer.h"
+#include "led_7seg.h"
 #include "button.h"
 #include "lcd.h"
 #include "picture.h"
-#include "utils.h"
-
-
-//#include "led_7seg.c"
-//#include "software_timer.c"
+#include "ds3231.h"
+#include "uart.h"
 
 /* USER CODE END Includes */
 
@@ -53,6 +55,8 @@
 /* USER CODE END PM */
 
 /* Private variables ---------------------------------------------------------*/
+I2C_HandleTypeDef hi2c1;
+
 SPI_HandleTypeDef hspi1;
 
 TIM_HandleTypeDef htim2;
@@ -72,6 +76,7 @@ static void MX_TIM2_Init(void);
 static void MX_SPI1_Init(void);
 static void MX_FSMC_Init(void);
 static void MX_USART1_UART_Init(void);
+static void MX_I2C1_Init(void);
 /* USER CODE BEGIN PFP */
 void system_init();
 void test_ledDebug();
@@ -117,15 +122,10 @@ int main(void)
   MX_SPI1_Init();
   MX_FSMC_Init();
   MX_USART1_UART_Init();
+  MX_I2C1_Init();
   /* USER CODE BEGIN 2 */
   system_init();
-  led7_SetColon(0);
 
-  uint8_t led7seg[4] = {0, 1, 2, 3};
-  uint8_t led7seg_buffer[4] = {0, 1, 2, 3};
-  int counter = 0;
-
-  setTimer2(2);
 
   /* USER CODE END 2 */
 
@@ -140,21 +140,10 @@ int main(void)
 
 	  while (!flag_timer2);
 	  flag_timer2 = 0;
-	  counter = (counter + 1) % 500;
-	  if (counter == 0) {
-		  led7seg[0] = led7seg_buffer[3];
-		  led7seg[1] = led7seg_buffer[0];
-		  led7seg[2] = led7seg_buffer[1];
-		  led7seg[3] = led7seg_buffer[2];
-		  for (int i = 0; i < 4; ++i) {
-			  led7seg_buffer[i] = led7seg[i];
-		  }
-	  }
-
-	  led7_SetDigit(led7seg[0], 0, 0);
-	  led7_SetDigit(led7seg[1], 1, 0);
-	  led7_SetDigit(led7seg[2], 2, 0);
-	  led7_SetDigit(led7seg[3], 3, 0);
+	  button_Scan();
+	  test_ledDebug();
+	  ds3231_ReadTime();
+//	  test_uart();
 
 
 //	  test_ledDebug();
@@ -207,6 +196,40 @@ void SystemClock_Config(void)
   {
     Error_Handler();
   }
+}
+
+/**
+  * @brief I2C1 Initialization Function
+  * @param None
+  * @retval None
+  */
+static void MX_I2C1_Init(void)
+{
+
+  /* USER CODE BEGIN I2C1_Init 0 */
+
+  /* USER CODE END I2C1_Init 0 */
+
+  /* USER CODE BEGIN I2C1_Init 1 */
+
+  /* USER CODE END I2C1_Init 1 */
+  hi2c1.Instance = I2C1;
+  hi2c1.Init.ClockSpeed = 100000;
+  hi2c1.Init.DutyCycle = I2C_DUTYCYCLE_2;
+  hi2c1.Init.OwnAddress1 = 0;
+  hi2c1.Init.AddressingMode = I2C_ADDRESSINGMODE_7BIT;
+  hi2c1.Init.DualAddressMode = I2C_DUALADDRESS_DISABLE;
+  hi2c1.Init.OwnAddress2 = 0;
+  hi2c1.Init.GeneralCallMode = I2C_GENERALCALL_DISABLE;
+  hi2c1.Init.NoStretchMode = I2C_NOSTRETCH_DISABLE;
+  if (HAL_I2C_Init(&hi2c1) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /* USER CODE BEGIN I2C1_Init 2 */
+
+  /* USER CODE END I2C1_Init 2 */
+
 }
 
 /**
@@ -466,6 +489,8 @@ void system_init(){
 	led7_init();
 	button_init();
 	lcd_init();
+	ds3231_init();
+	uart_init_rs232();
 	setTimer2(50);
 }
 
@@ -506,6 +531,16 @@ void test_7seg(){
 	led7_SetDigit(7, 3, 0);
 }
 
+void test_uart(){
+	if(button_count[12] == 1){
+		uart_Rs232SendNum(ds3231_hours);
+		uart_Rs232SendString(":");
+		uart_Rs232SendNum(ds3231_min);
+		uart_Rs232SendString(":");
+		uart_Rs232SendNum(ds3231_sec);
+		uart_Rs232SendString("\n");
+	}
+}
 
 /* USER CODE END 4 */
 

@@ -6,6 +6,7 @@
 # Add inputs and outputs from these tool invocations to the build variables 
 C_SRCS += \
 ../Core/Src/button.c \
+../Core/Src/ds3231.c \
 ../Core/Src/lcd.c \
 ../Core/Src/led_7seg.c \
 ../Core/Src/main.c \
@@ -15,10 +16,14 @@ C_SRCS += \
 ../Core/Src/stm32f4xx_it.c \
 ../Core/Src/syscalls.c \
 ../Core/Src/sysmem.c \
-../Core/Src/system_stm32f4xx.c 
+../Core/Src/system_stm32f4xx.c \
+../Core/Src/uart.c \
+../Core/Src/usart.c \
+../Core/Src/utils.c 
 
 OBJS += \
 ./Core/Src/button.o \
+./Core/Src/ds3231.o \
 ./Core/Src/lcd.o \
 ./Core/Src/led_7seg.o \
 ./Core/Src/main.o \
@@ -28,10 +33,14 @@ OBJS += \
 ./Core/Src/stm32f4xx_it.o \
 ./Core/Src/syscalls.o \
 ./Core/Src/sysmem.o \
-./Core/Src/system_stm32f4xx.o 
+./Core/Src/system_stm32f4xx.o \
+./Core/Src/uart.o \
+./Core/Src/usart.o \
+./Core/Src/utils.o 
 
 C_DEPS += \
 ./Core/Src/button.d \
+./Core/Src/ds3231.d \
 ./Core/Src/lcd.d \
 ./Core/Src/led_7seg.d \
 ./Core/Src/main.d \
@@ -41,7 +50,10 @@ C_DEPS += \
 ./Core/Src/stm32f4xx_it.d \
 ./Core/Src/syscalls.d \
 ./Core/Src/sysmem.d \
-./Core/Src/system_stm32f4xx.d 
+./Core/Src/system_stm32f4xx.d \
+./Core/Src/uart.d \
+./Core/Src/usart.d \
+./Core/Src/utils.d 
 
 
 # Each subdirectory must supply rules for building sources it contributes
