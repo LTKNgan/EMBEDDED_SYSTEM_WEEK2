@@ -5,6 +5,7 @@
 
 # Add inputs and outputs from these tool invocations to the build variables 
 C_SRCS += \
+../Core/Src/at24c.c \
 ../Core/Src/button.c \
 ../Core/Src/buzzer.c \
 ../Core/Src/ds3231.c \
@@ -20,11 +21,13 @@ C_SRCS += \
 ../Core/Src/sysmem.c \
 ../Core/Src/system_stm32f4xx.c \
 ../Core/Src/tim.c \
+../Core/Src/touch.c \
 ../Core/Src/uart.c \
 ../Core/Src/usart.c \
 ../Core/Src/utils.c 
 
 OBJS += \
+./Core/Src/at24c.o \
 ./Core/Src/button.o \
 ./Core/Src/buzzer.o \
 ./Core/Src/ds3231.o \
@@ -40,11 +43,13 @@ OBJS += \
 ./Core/Src/sysmem.o \
 ./Core/Src/system_stm32f4xx.o \
 ./Core/Src/tim.o \
+./Core/Src/touch.o \
 ./Core/Src/uart.o \
 ./Core/Src/usart.o \
 ./Core/Src/utils.o 
 
 C_DEPS += \
+./Core/Src/at24c.d \
 ./Core/Src/button.d \
 ./Core/Src/buzzer.d \
 ./Core/Src/ds3231.d \
@@ -60,6 +65,7 @@ C_DEPS += \
 ./Core/Src/sysmem.d \
 ./Core/Src/system_stm32f4xx.d \
 ./Core/Src/tim.d \
+./Core/Src/touch.d \
 ./Core/Src/uart.d \
 ./Core/Src/usart.d \
 ./Core/Src/utils.d 

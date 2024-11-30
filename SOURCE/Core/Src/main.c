@@ -41,6 +41,8 @@
 #include "uart.h"
 #include "sensor.h"
 #include "buzzer.h"
+#include "at24c.h"
+#include "touch.h"
 
 /* USER CODE END Includes */
 
@@ -51,6 +53,9 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
+#define INIT 0
+#define DRAW 1
+#define CLEAR 2
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -66,6 +71,7 @@ I2C_HandleTypeDef hi2c1;
 
 SPI_HandleTypeDef hspi1;
 
+TIM_HandleTypeDef htim1;
 TIM_HandleTypeDef htim2;
 TIM_HandleTypeDef htim13;
 
@@ -74,6 +80,7 @@ UART_HandleTypeDef huart1;
 SRAM_HandleTypeDef hsram1;
 
 /* USER CODE BEGIN PV */
+int draw_Status = INIT;
 
 /* USER CODE END PV */
 
@@ -88,6 +95,7 @@ static void MX_DMA_Init(void);
 static void MX_ADC1_Init(void);
 static void MX_I2C1_Init(void);
 static void MX_TIM13_Init(void);
+static void MX_TIM1_Init(void);
 /* USER CODE BEGIN PFP */
 void system_init();
 void test_ledDebug();
@@ -139,27 +147,35 @@ int main(void)
   MX_ADC1_Init();
   MX_I2C1_Init();
   MX_TIM13_Init();
+  MX_TIM1_Init();
   /* USER CODE BEGIN 2 */
   system_init();
-
+  touch_Adjust ();
+  lcd_Clear(BLACK);
 
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
+
+
   while (1)
   {
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-
+	  touch_Scan();
+	  if( touch_IsTouched() && draw_Status == DRAW ){
+	  // draw a point at the touch position
+		  lcd_DrawPoint ( touch_GetX(), touch_GetY(), RED);
+	  }
 
 	  while (!flag_timer2);
 	  flag_timer2 = 0;
-	  button_Scan();
+	  touchProcess ();
 	  test_ledDebug();
-	  test_adc();
-	  test_buzzer();
+//	  test_adc();
+//	  test_buzzer();
 //	  test_uart();
 
 
@@ -370,6 +386,52 @@ static void MX_SPI1_Init(void)
 }
 
 /**
+  * @brief TIM1 Initialization Function
+  * @param None
+  * @retval None
+  */
+static void MX_TIM1_Init(void)
+{
+
+  /* USER CODE BEGIN TIM1_Init 0 */
+
+  /* USER CODE END TIM1_Init 0 */
+
+  TIM_ClockConfigTypeDef sClockSourceConfig = {0};
+  TIM_MasterConfigTypeDef sMasterConfig = {0};
+
+  /* USER CODE BEGIN TIM1_Init 1 */
+
+  /* USER CODE END TIM1_Init 1 */
+  htim1.Instance = TIM1;
+  htim1.Init.Prescaler = 84-1;
+  htim1.Init.CounterMode = TIM_COUNTERMODE_UP;
+  htim1.Init.Period = 65535;
+  htim1.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
+  htim1.Init.RepetitionCounter = 0;
+  htim1.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
+  if (HAL_TIM_Base_Init(&htim1) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  sClockSourceConfig.ClockSource = TIM_CLOCKSOURCE_INTERNAL;
+  if (HAL_TIM_ConfigClockSource(&htim1, &sClockSourceConfig) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  sMasterConfig.MasterOutputTrigger = TIM_TRGO_RESET;
+  sMasterConfig.MasterSlaveMode = TIM_MASTERSLAVEMODE_DISABLE;
+  if (HAL_TIMEx_MasterConfigSynchronization(&htim1, &sMasterConfig) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /* USER CODE BEGIN TIM1_Init 2 */
+
+  /* USER CODE END TIM1_Init 2 */
+
+}
+
+/**
   * @brief TIM2 Initialization Function
   * @param None
   * @retval None
@@ -532,10 +594,10 @@ static void MX_GPIO_Init(void)
   HAL_GPIO_WritePin(GPIOE, DEBUG_LED_Pin|OUTPUT_Y0_Pin|OUTPUT_Y1_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(FSMC_RES_GPIO_Port, FSMC_RES_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(GPIOC, FSMC_RES_Pin|T_MOSI_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(LD_LATCH_GPIO_Port, LD_LATCH_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(GPIOG, LD_LATCH_Pin|T_CS_Pin|T_CLK_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(FSMC_BLK_GPIO_Port, FSMC_BLK_Pin, GPIO_PIN_RESET);
@@ -550,12 +612,12 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(GPIOE, &GPIO_InitStruct);
 
-  /*Configure GPIO pin : FSMC_RES_Pin */
-  GPIO_InitStruct.Pin = FSMC_RES_Pin;
+  /*Configure GPIO pins : FSMC_RES_Pin T_MOSI_Pin */
+  GPIO_InitStruct.Pin = FSMC_RES_Pin|T_MOSI_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-  HAL_GPIO_Init(FSMC_RES_GPIO_Port, &GPIO_InitStruct);
+  HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
 
   /*Configure GPIO pins : INPUT_X0_Pin INPUT_X1_Pin */
   GPIO_InitStruct.Pin = INPUT_X0_Pin|INPUT_X1_Pin;
@@ -569,12 +631,18 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
 
-  /*Configure GPIO pin : LD_LATCH_Pin */
-  GPIO_InitStruct.Pin = LD_LATCH_Pin;
+  /*Configure GPIO pins : LD_LATCH_Pin T_CS_Pin T_CLK_Pin */
+  GPIO_InitStruct.Pin = LD_LATCH_Pin|T_CS_Pin|T_CLK_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-  HAL_GPIO_Init(LD_LATCH_GPIO_Port, &GPIO_InitStruct);
+  HAL_GPIO_Init(GPIOG, &GPIO_InitStruct);
+
+  /*Configure GPIO pins : T_PEN_Pin T_MISO_Pin */
+  GPIO_InitStruct.Pin = T_PEN_Pin|T_MISO_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
+  GPIO_InitStruct.Pull = GPIO_PULLUP;
+  HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
 
   /*Configure GPIO pin : FSMC_BLK_Pin */
   GPIO_InitStruct.Pin = FSMC_BLK_Pin;
@@ -667,6 +735,7 @@ void system_init(){
 	uart_init_rs232();
 	sensor_init();
 	buzzer_init();
+	touch_init();
 	setTimer2(50);
 }
 
@@ -771,6 +840,38 @@ void test_buzzer(){
 		buzzer_SetVolume(25);
 	}
 
+}
+
+
+uint8_t isButtonClear(){
+	if(!touch_IsTouched()) return 0;
+	return touch_GetX() > 60 && touch_GetX() < 180 && touch_GetY() > 10 && touch_GetY() < 60;
+}
+
+void touchProcess(){
+	switch (draw_Status) {
+		case INIT:
+                // display blue button
+			lcd_Fill(60, 10, 180, 60, GBLUE);
+			lcd_ShowStr(90, 20, "CLEAR", RED, BLACK, 24, 1);
+			draw_Status = DRAW;
+			break;
+		case DRAW:
+			if(isButtonClear()){
+				draw_Status = CLEAR;
+                    // clear board
+				lcd_Fill(0, 60, 240, 320, BLACK);
+                    // display green button
+				lcd_Fill(60, 10, 180, 60, GREEN);
+				lcd_ShowStr(90, 20, "CLEAR", RED, BLACK, 24, 1);
+			}
+			break;
+		case CLEAR:
+			if(!touch_IsTouched()) draw_Status = INIT;
+			break;
+		default:
+			break;
+	}
 }
 
 /* USER CODE END 4 */
