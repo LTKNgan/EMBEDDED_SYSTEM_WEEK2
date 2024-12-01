@@ -41,9 +41,11 @@ Core/Src/main.o: ../Core/Src/main.c ../Core/Inc/main.h \
  ../Core/Inc/led_7seg.h ../Core/Inc/spi.h ../Core/Inc/button.h \
  ../Core/Inc/lcd.h ../Core/Inc/gpio.h ../Core/Inc/picture.h \
  ../Core/Inc/ds3231.h ../Core/Inc/i2c.h ../Core/Inc/utils.h \
- ../Core/Inc/uart.h ../Core/Inc/usart.h ../Core/Inc/sensor.h \
- ../Core/Inc/adc.h ../Core/Inc/buzzer.h ../Core/Inc/at24c.h \
- ../Core/Inc/touch.h ../Core/Inc/software_timer.h
+ ../Core/Inc/uart.h ../Core/Inc/usart.h ../Core/Inc/light_control.h \
+ ../Core/Inc/uart.h ../Core/Inc/button.h ../Core/Inc/lcd.h \
+ ../Core/Inc/sensor.h ../Core/Inc/adc.h ../Core/Inc/buzzer.h \
+ ../Core/Inc/at24c.h ../Core/Inc/touch.h ../Core/Inc/software_timer.h \
+ ../Core/Inc/light_control.h
 
 ../Core/Inc/main.h:
 
@@ -161,6 +163,14 @@ Core/Src/main.o: ../Core/Src/main.c ../Core/Inc/main.h \
 
 ../Core/Inc/usart.h:
 
+../Core/Inc/light_control.h:
+
+../Core/Inc/uart.h:
+
+../Core/Inc/button.h:
+
+../Core/Inc/lcd.h:
+
 ../Core/Inc/sensor.h:
 
 ../Core/Inc/adc.h:
@@ -172,3 +182,5 @@ Core/Src/main.o: ../Core/Src/main.c ../Core/Inc/main.h \
 ../Core/Inc/touch.h:
 
 ../Core/Inc/software_timer.h:
+
+../Core/Inc/light_control.h:

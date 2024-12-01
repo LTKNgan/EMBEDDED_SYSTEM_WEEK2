@@ -43,6 +43,7 @@
 #include "buzzer.h"
 #include "at24c.h"
 #include "touch.h"
+#include "light_control.h"
 
 /* USER CODE END Includes */
 
@@ -150,7 +151,6 @@ int main(void)
   MX_TIM1_Init();
   /* USER CODE BEGIN 2 */
   system_init();
-  touch_Adjust ();
   lcd_Clear(BLACK);
 
   /* USER CODE END 2 */
@@ -164,15 +164,11 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-	  touch_Scan();
-	  if( touch_IsTouched() && draw_Status == DRAW ){
-	  // draw a point at the touch position
-		  lcd_DrawPoint ( touch_GetX(), touch_GetY(), RED);
-	  }
-
 	  while (!flag_timer2);
 	  flag_timer2 = 0;
-	  touchProcess ();
+	  button_Scan();
+	  test_Esp();
+	  lightProcess();
 	  test_ledDebug();
 //	  test_adc();
 //	  test_buzzer();
@@ -736,6 +732,7 @@ void system_init(){
 	sensor_init();
 	buzzer_init();
 	touch_init();
+	uart_init_esp();
 	setTimer2(50);
 }
 

@@ -2,7 +2,7 @@
  * usart.c
  *
  *  Created on: Dec 1, 2024
- *      Author: DELL
+ *      Author: Ngan La
  */
 
 
@@ -13,5 +13,5 @@
 /* USER CODE END 0 */
 
 UART_HandleTypeDef huart1;
-
+UART_HandleTypeDef huart2;
 

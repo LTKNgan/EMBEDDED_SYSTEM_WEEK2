@@ -11,6 +11,7 @@ C_SRCS += \
 ../Core/Src/ds3231.c \
 ../Core/Src/lcd.c \
 ../Core/Src/led_7seg.c \
+../Core/Src/light_control.c \
 ../Core/Src/main.c \
 ../Core/Src/picture.c \
 ../Core/Src/sensor.c \
@@ -33,6 +34,7 @@ OBJS += \
 ./Core/Src/ds3231.o \
 ./Core/Src/lcd.o \
 ./Core/Src/led_7seg.o \
+./Core/Src/light_control.o \
 ./Core/Src/main.o \
 ./Core/Src/picture.o \
 ./Core/Src/sensor.o \
@@ -55,6 +57,7 @@ C_DEPS += \
 ./Core/Src/ds3231.d \
 ./Core/Src/lcd.d \
 ./Core/Src/led_7seg.d \
+./Core/Src/light_control.d \
 ./Core/Src/main.d \
 ./Core/Src/picture.d \
 ./Core/Src/sensor.d \
