@@ -167,18 +167,16 @@ int main(void)
 	  while (!flag_timer2);
 	  flag_timer2 = 0;
 	  button_Scan();
-	  test_Esp();
-	  lightProcess();
+//	  test_Esp();
+//	  lightProcess();
 	  test_ledDebug();
 //	  test_adc();
 //	  test_buzzer();
 //	  test_uart();
 
-
-//	  test_ledDebug();
-//	  test_ledY0();
-//	  test_ledY1();
-//	  test_7seg();
+	  test_ledY0();
+	  test_ledY1();
+	  test_7seg();
   }
   /* USER CODE END 3 */
 }
