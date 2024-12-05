@@ -764,7 +764,7 @@ void system_init(){
 	HAL_GPIO_WritePin(DEBUG_LED_GPIO_Port, DEBUG_LED_Pin, 0);
 
 	timer_init();
-	led7_init();
+//	led7_init();
 	button_init();
 	lcd_init();
 	ds3231_init();
