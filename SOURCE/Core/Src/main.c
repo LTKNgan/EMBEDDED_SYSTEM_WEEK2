@@ -177,8 +177,8 @@ int main(void)
 	  lightProcess();
 
 //	  temperature = sensor_GetTemperature();
-	  sprintf(buffer, sizeof(buffer), "!TEMP:%f#", sensor_GetTemperature());
-	  uart_EspSendBytes((uint8_t*)buffer, strlen(buffer));
+//	  sprintf(buffer, sizeof(buffer), "!TEMP:%f#", sensor_GetTemperature());
+//	  uart_EspSendBytes((uint8_t*)buffer, strlen(buffer));
 //	  test_ledDebug();
 //	  test_ledY1();
 //	  lcd_ShowFloatNum(20, 30, sensor_GetTemperature(), 4, WHITE, RED, 24);

@@ -8,7 +8,7 @@
 
 // set up Adafruit
 #define AIO_SERVER "io.adafruit.com"
-#define AIO_AIO_SERVERPORT 1883
+#define AIO_SERVERPORT 1883
 
 // user set up
 #define AIO_USERNAME "LTKNgan"
@@ -42,7 +42,7 @@ void setup() {
 
   Serial.begin(115200);
 
-  Wifi.begin(WLAN_SSID, WLAN_PASS);
+  WiFi.begin(WLAN_SSID, WLAN_PASS);
   while (WiFi.status() != WL_CONNECTED) {
     delay(500);
   }
@@ -52,11 +52,6 @@ void setup() {
   mqtt.subscribe(&light_sub);
 
 // connect MQTT
-  while (mqtt.connect() != 0) {
-    mqtt.disconnect();
-    delay(500);
-  }
-
   while (mqtt.connect() != 0) {
     mqtt.disconnect();
     delay(500);
