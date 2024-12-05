@@ -44,7 +44,7 @@ void setup() {
 
   WiFi.begin(WLAN_SSID, WLAN_PASS);
   while (WiFi.status() != WL_CONNECTED) {
-    delay(500);
+    delay(100);
   }
 
 // subscribe light feed
@@ -54,7 +54,7 @@ void setup() {
 // connect MQTT
   while (mqtt.connect() != 0) {
     mqtt.disconnect();
-    delay(500);
+    delay(100);
   }
   digitalWrite(5, LOW);
 }
