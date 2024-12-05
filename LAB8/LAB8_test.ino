@@ -12,7 +12,7 @@
 
 // user set up
 #define AIO_USERNAME "LTKNgan"
-#define AIO_KEY "aio_fddw14c0yxcbVBR8ixxyJ17PIFnf"
+#define AIO_KEY "aio_tSmR694AASz0YnSABhP5CbgxUDZP"
 
 // set up MQTT
 WiFiClient client;
