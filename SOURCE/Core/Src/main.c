@@ -77,6 +77,7 @@ TIM_HandleTypeDef htim2;
 TIM_HandleTypeDef htim13;
 
 UART_HandleTypeDef huart1;
+UART_HandleTypeDef huart2;
 
 SRAM_HandleTypeDef hsram1;
 
@@ -97,12 +98,14 @@ static void MX_ADC1_Init(void);
 static void MX_I2C1_Init(void);
 static void MX_TIM13_Init(void);
 static void MX_TIM1_Init(void);
+static void MX_USART2_UART_Init(void);
 /* USER CODE BEGIN PFP */
 void system_init();
 void test_ledDebug();
 void test_ledY0();
 void test_ledY1();
 void test_7seg();
+void test_lcd();
 void test_adc();
 void test_buzzer();
 /* USER CODE END PFP */
@@ -149,10 +152,13 @@ int main(void)
   MX_I2C1_Init();
   MX_TIM13_Init();
   MX_TIM1_Init();
+  MX_USART2_UART_Init();
   /* USER CODE BEGIN 2 */
   system_init();
   lcd_Clear(BLACK);
-
+  char buffer[50];
+  float temperature;
+  int counter;
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -167,16 +173,15 @@ int main(void)
 	  while (!flag_timer2);
 	  flag_timer2 = 0;
 	  button_Scan();
-//	  test_Esp();
-//	  lightProcess();
-	  test_ledDebug();
-//	  test_adc();
-//	  test_buzzer();
-//	  test_uart();
+	  test_Esp();
+	  lightProcess();
 
-	  test_ledY0();
-	  test_ledY1();
-	  test_7seg();
+//	  temperature = sensor_GetTemperature();
+	  sprintf(buffer, sizeof(buffer), "!TEMP:%f#", sensor_GetTemperature());
+	  uart_EspSendBytes((uint8_t*)buffer, strlen(buffer));
+//	  test_ledDebug();
+//	  test_ledY1();
+//	  lcd_ShowFloatNum(20, 30, sensor_GetTemperature(), 4, WHITE, RED, 24);
   }
   /* USER CODE END 3 */
 }
@@ -550,6 +555,39 @@ static void MX_USART1_UART_Init(void)
 }
 
 /**
+  * @brief USART2 Initialization Function
+  * @param None
+  * @retval None
+  */
+static void MX_USART2_UART_Init(void)
+{
+
+  /* USER CODE BEGIN USART2_Init 0 */
+
+  /* USER CODE END USART2_Init 0 */
+
+  /* USER CODE BEGIN USART2_Init 1 */
+
+  /* USER CODE END USART2_Init 1 */
+  huart2.Instance = USART2;
+  huart2.Init.BaudRate = 115200;
+  huart2.Init.WordLength = UART_WORDLENGTH_8B;
+  huart2.Init.StopBits = UART_STOPBITS_1;
+  huart2.Init.Parity = UART_PARITY_NONE;
+  huart2.Init.Mode = UART_MODE_TX_RX;
+  huart2.Init.HwFlowCtl = UART_HWCONTROL_NONE;
+  huart2.Init.OverSampling = UART_OVERSAMPLING_16;
+  if (HAL_UART_Init(&huart2) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /* USER CODE BEGIN USART2_Init 2 */
+
+  /* USER CODE END USART2_Init 2 */
+
+}
+
+/**
   * Enable DMA controller clock
   */
 static void MX_DMA_Init(void)
@@ -591,6 +629,9 @@ static void MX_GPIO_Init(void)
   HAL_GPIO_WritePin(GPIOC, FSMC_RES_Pin|T_MOSI_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
+  HAL_GPIO_WritePin(ESP_POWER_GPIO_Port, ESP_POWER_Pin, GPIO_PIN_RESET);
+
+  /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(GPIOG, LD_LATCH_Pin|T_CS_Pin|T_CLK_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
@@ -613,17 +654,18 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
 
-  /*Configure GPIO pins : INPUT_X0_Pin INPUT_X1_Pin */
-  GPIO_InitStruct.Pin = INPUT_X0_Pin|INPUT_X1_Pin;
+  /*Configure GPIO pin : ESP_BUSY_Pin */
+  GPIO_InitStruct.Pin = ESP_BUSY_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
-  HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+  HAL_GPIO_Init(ESP_BUSY_GPIO_Port, &GPIO_InitStruct);
 
-  /*Configure GPIO pins : INPUT_X2_Pin INPUT_X3_Pin */
-  GPIO_InitStruct.Pin = INPUT_X2_Pin|INPUT_X3_Pin;
-  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
+  /*Configure GPIO pin : ESP_POWER_Pin */
+  GPIO_InitStruct.Pin = ESP_POWER_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
-  HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  HAL_GPIO_Init(ESP_POWER_GPIO_Port, &GPIO_InitStruct);
 
   /*Configure GPIO pins : LD_LATCH_Pin T_CS_Pin T_CLK_Pin */
   GPIO_InitStruct.Pin = LD_LATCH_Pin|T_CS_Pin|T_CLK_Pin;
@@ -729,7 +771,6 @@ void system_init(){
 	uart_init_rs232();
 	sensor_init();
 	buzzer_init();
-	touch_init();
 	uart_init_esp();
 	setTimer2(50);
 }
@@ -769,6 +810,16 @@ void test_7seg(){
 	led7_SetDigit(3, 1, 0);
 	led7_SetDigit(5, 2, 0);
 	led7_SetDigit(7, 3, 0);
+}
+
+
+void test_lcd (){
+lcd_Fill(0, 0, 240 , 20, BLUE );
+lcd_StrCenter (0, 2, " Hello World !!! ", RED , BLUE , 16, 1);
+lcd_ShowStr (20 , 30, " Test lcd screen ", WHITE , RED , 24, 0);
+lcd_DrawCircle (60 , 120 , GREEN , 40, 1);
+lcd_DrawCircle (160 , 120 , BRED , 40, 0);
+lcd_ShowPicture (80 , 200 , 90, 90, gImage_test );
 }
 
 void test_uart(){

@@ -62,7 +62,8 @@ void uart_Rs232SendNumPercent(uint32_t num)
 
 void uart_init_esp(){
 	HAL_UART_Receive_IT(&huart2, &receive_buffer2, 1);
-	HAL_GPIO_WritePin(OUTPUT_Y0_GPIO_Port, OUTPUT_Y0_Pin, 1);
+//	HAL_GPIO_WritePin(DEBUG_LED_GPIO_Port, DEBUG_LED_Pin, 1);
+
 }
 
 void uart_EspSendBytes(uint8_t* bytes, uint16_t size){
@@ -88,6 +89,10 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart){
 }
 
 uint8_t uart_EspCheck(){
-	if(check_esp == 1) return 1;
+	if(check_esp == 1) {
+		HAL_GPIO_WritePin(DEBUG_LED_GPIO_Port, DEBUG_LED_Pin, 1);
+		return 1;
+	}
+	HAL_GPIO_WritePin(DEBUG_LED_GPIO_Port, DEBUG_LED_Pin, 0);
 	return 0;
 }

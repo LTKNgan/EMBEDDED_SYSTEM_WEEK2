@@ -4,6 +4,6 @@ uart.c:25:6:uart_Rs232SendBytes	16	static
 uart.c:29:6:uart_Rs232SendNum	24	static
 uart.c:54:6:uart_Rs232SendNumPercent	16	static
 uart.c:63:6:uart_init_esp	8	static
-uart.c:68:6:uart_EspSendBytes	16	static
-uart.c:72:6:HAL_UART_RxCpltCallback	16	static
-uart.c:90:9:uart_EspCheck	4	static
+uart.c:69:6:uart_EspSendBytes	16	static
+uart.c:73:6:HAL_UART_RxCpltCallback	16	static
+uart.c:91:9:uart_EspCheck	8	static

@@ -1,4 +1,4 @@
-#include <ESP8266WiFi .h>
+#include <ESP8266WiFi.h>
 #include "Adafruit_MQTT.h"
 #include "Adafruit_MQTT_Client.h"
 
@@ -20,17 +20,17 @@ Adafruit_MQTT_Client mqtt(&client, AIO_SERVER, AIO_SERVERPORT, AIO_USERNAME, AIO
 
 // set publish
 Adafruit_MQTT_Publish light_pub = Adafruit_MQTT_Publish(&mqtt, AIO_USERNAME "/feeds/lab8-led");
-
+Adafruit_MQTT_Publish temperature_pub = Adafruit_MQTT_Publish(&mqtt, AIO_USERNAME "/feeds/temperature");
 // set up subcribe 
-Adafruit_MQTT_Subscribe light_sub = Adafruit_MQTT_Subscribe(&mqtt, AIO_USERNAME "/feeds/led", MQTT_QOS_1);
+Adafruit_MQTT_Subscribe light_sub = Adafruit_MQTT_Subscribe(&mqtt, AIO_USERNAME "/feeds/lab8-led", MQTT_QOS_1);
 
 
 int led_counter = 0;
 int led_status = HIGH;
 
-void lightcallback ( char * value , uint16_t len ){
-  if (value[0] == ’0’) Serial.print (’a’);
-  if (value[0] == ’1’) Serial.print (’A’);
+void lightcallback(char* value, uint16_t len){
+  if (value[0] == '0') Serial.print ('a');
+  if (value[0] == '1') Serial.print ('A');
 }
 
 void setup() {
@@ -74,6 +74,18 @@ void loop() {
     else if (msg == 'a') light_pub.publish(0);
     else if (msg == 'A') light_pub.publish(1);
   }
+
+  // if (Serial.available() > 0) {
+  //   String tempData = Serial.readStringUntil('#'); 
+  //   if (tempData.startsWith("!TEMP:")) { 
+  //     String temperature = tempData.substring(6); 
+  //     temperature_pub.publish(temperature.toFloat()); 
+  //     // Serial.print(temperature);
+  //     // Serial.print("\t");
+  //     // Serial.print(temperature.toFloat());
+  //     // Serial.print("\n");
+  //   } 
+  // }
 
   led_counter++;
   if (led_counter  == 100) {
