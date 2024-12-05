@@ -63,24 +63,21 @@ void loop() {
   mqtt.processPackets(1) ;
 
   // put your main code here, to run repeatedly:
-  if(Serial.available()) {
-    int msg = Serial.read();
-    if (msg == 'o') Serial.print("O");
-    else if (msg == 'a') light_pub.publish(0);
-    else if (msg == 'A') light_pub.publish(1);
-  }
-
-  // if (Serial.available() > 0) {
-  //   String tempData = Serial.readStringUntil('#'); 
-  //   if (tempData.startsWith("!TEMP:")) { 
-  //     String temperature = tempData.substring(6); 
-  //     temperature_pub.publish(temperature.toFloat()); 
-  //     // Serial.print(temperature);
-  //     // Serial.print("\t");
-  //     // Serial.print(temperature.toFloat());
-  //     // Serial.print("\n");
-  //   } 
+  // if(Serial.available()) {
+  //   int msg = Serial.read();
+  //   if (msg == 'o') Serial.print("O");
+  //   else if (msg == 'a') light_pub.publish(0);
+  //   else if (msg == 'A') light_pub.publish(1);
   // }
+
+  if (Serial.available() > 0) {
+    String tempData = Serial.readStringUntil('#'); 
+    if (tempData.startsWith("!TEMP:")) { 
+      String temperature = tempData.substring(6); 
+      temperature_pub.publish(temperature.toFloat()); 
+      Serial.print("X");
+    } 
+  }
 
   led_counter++;
   if (led_counter  == 100) {

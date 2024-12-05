@@ -84,6 +84,7 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart){
 		if(receive_buffer2 == 'O') check_esp = 1;
 		else if(receive_buffer2 == 'a') light_status = 0;
 		else if(receive_buffer2 == 'A') light_status = 1;
+		else if(receive_buffer2 == 'X') lcd_ShowStr(10, 50, "ESP Connect", GREEN, BLACK, 24, 0);
 		HAL_UART_Receive_IT(&huart2, &receive_buffer2, 1);
 	}
 }

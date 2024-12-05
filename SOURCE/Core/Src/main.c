@@ -158,7 +158,9 @@ int main(void)
   lcd_Clear(BLACK);
   char buffer[50];
   float temperature;
-  int counter;
+  int counter = 0;
+
+  setTimer2(1000);
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -172,16 +174,18 @@ int main(void)
     /* USER CODE BEGIN 3 */
 	  while (!flag_timer2);
 	  flag_timer2 = 0;
-	  button_Scan();
-	  test_Esp();
-	  lightProcess();
 
-//	  temperature = sensor_GetTemperature();
-//	  sprintf(buffer, sizeof(buffer), "!TEMP:%f#", sensor_GetTemperature());
-//	  uart_EspSendBytes((uint8_t*)buffer, strlen(buffer));
-//	  test_ledDebug();
-//	  test_ledY1();
-//	  lcd_ShowFloatNum(20, 30, sensor_GetTemperature(), 4, WHITE, RED, 24);
+	  if (counter == 0) {
+		  temperature = sensor_GetTemperature();
+		  int intPart = (int)temperature;
+		  int fracPart = (int)((temperature - intPart) * 100);
+		  sprintf(buffer, "!TEMP:%d.%02d#", intPart, fracPart);
+		  uart_EspSendBytes((uint8_t*)buffer, strlen(buffer));
+
+		  lcd_ShowStr(10, 180, "Temperature:", RED, BLACK, 16, 0);
+		  lcd_ShowFloatNum(130, 180,sensor_GetTemperature(), 4, RED, BLACK, 16);
+	  }
+	  counter = (counter + 1) % 10;
   }
   /* USER CODE END 3 */
 }
