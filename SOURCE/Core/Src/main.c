@@ -136,7 +136,6 @@ int main(void)
 	  tick = (tick + 1) % 1000;
 	  if (tick % 250 == 0) colon_status = 1 - colon_status;
 	  if (tick == 0) {
-		  colon_status = 1 - colon_status;
 		  sec = (sec + 1) % 60;
 		  if (sec == 0) {
 			  min = (min + 1) % 60;
